@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "34e0bd93-69c1-4f4e-8d56-1fafb188314c",
+		"name": "media_manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8080/picture",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"picture01.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/picture",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"picture"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/upload-avatar",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "year",
+							"value": "2022",
+							"type": "default"
+						},
+						{
+							"key": "month",
+							"value": "03",
+							"type": "default"
+						},
+						{
+							"key": "day",
+							"value": "13",
+							"type": "default"
+						},
+						{
+							"key": "hour",
+							"value": "18",
+							"type": "default"
+						},
+						{
+							"key": "minute",
+							"value": "34",
+							"type": "default"
+						},
+						{
+							"key": "second",
+							"value": "47",
+							"type": "default"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/servers/media_manager/pictures/picture01.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/save_media",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"save_media"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
