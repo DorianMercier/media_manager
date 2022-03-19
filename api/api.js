@@ -2,6 +2,8 @@ const fs = require("fs");
 const fm = require("./file_manager");
 const log = require("./log");
 const multer = require('multer');
+const mc = require("./media_catcher");
+const zip = require("express-zip");
 
 function check_time(time) {
     let is_positive = true;
@@ -68,6 +70,18 @@ function post_save_media(req, res) {
     }
 }
 
+function get_medias(req, res) {
+  log.info("Receiving GET /get_medias request");
+  if(!req.is("application/json")) return res.status(400).json(JSON.stringify(error_bodies.error_format_json));
+  const body = req.body;
+  const file_paths = mc.get_medias(body.amount, body.year, body.month, body.day, body.hour, body.minutes, body.seconds);
+
+  log.debug(file_paths);
+  console.log(file_paths);
+
+  return res.status(200).zip(file_paths);
 
 
-module.exports = {get_picture, post_save_media};
+}
+
+module.exports = {get_picture, post_save_media, get_medias};
