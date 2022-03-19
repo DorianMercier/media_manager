@@ -4,6 +4,7 @@ const log = require("./log");
 const multer = require('multer');
 const mc = require("./media_catcher");
 const zip = require("express-zip");
+const sharp = require("sharp");
 
 function check_time(time) {
     let is_positive = true;
@@ -76,12 +77,45 @@ function get_medias(req, res) {
   const body = req.body;
   const file_paths = mc.get_medias(body.amount, body.year, body.month, body.day, body.hour, body.minutes, body.seconds);
 
-  log.debug(file_paths);
-  console.log(file_paths);
-
   return res.status(200).zip(file_paths);
-
-
 }
 
-module.exports = {get_picture, post_save_media, get_medias};
+function get_icons(req, res) {
+  log.info("Receiving GET /get_icons request");
+
+  if(!req.is("application/json")) return res.status(400).json(JSON.stringify(error_bodies.error_format_json));
+  
+  const body = req.body;
+
+  const file_paths = mc.get_medias(body.amount, body.year, body.month, body.day, body.hour, body.minutes, body.seconds);
+
+  //A modifier pour inclure dans un fichier de configuration
+  const path_resizing = "C:/servers/media_manager/pictures/buffer_icons/";
+  var input_file;
+  var output_file;
+  const size = body.size;
+  log.debug("Taille demandée : " + size);
+
+  for(file in file_paths) {
+    input_file = file_paths[file].path;
+    output_file = path_resizing + file_paths[file].name;
+    if(!fs.existsSync(output_file)) {
+      fs.writeFileSync(output_file, "", { flag: "w" }, err => {log.error("Failed to create the file " + output_file + ". " + err);});
+
+      sharp(input_file).resize({height: size, width: size}).toFile(output_file)
+        .then(function (newFileInfo) {
+          log.info("Adding the icon " + output_file + " to the buffer");
+          log.info(newFileInfo);
+        })
+        .catch(function(err) {
+          log.error("Error occured when generating the icon " + output_file + " for the picture " + input_file);
+          log.error(err);
+        }); 
+      }
+      file_paths[file].path = output_file;
+  }
+
+  return res.status(200).zip(file_paths);
+}
+
+module.exports = {get_picture, post_save_media, get_medias, get_icons};

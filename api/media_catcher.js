@@ -2,6 +2,7 @@ const fs = require('fs');
 const log = require("./log");
 let date_obj = new Date();
 
+//@TODO modifier pour ajouter dans un fichier de config
 const base_path = "C:/servers/media_manager/pictures/";
 
 function is_file_before(file_name, day, hour, minutes, seconds) {
