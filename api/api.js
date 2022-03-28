@@ -118,4 +118,46 @@ function get_icons(req, res) {
   return res.status(200).zip(file_paths);
 }
 
-module.exports = {get_picture, post_save_media, get_medias, get_icons};
+function get_index(res) {
+  log.info("Receiving GET /get_index request");
+  var res_obj = [];
+  const date_obj = new Date();
+  const cur_year = date_obj.getFullYear();
+
+
+  const base_path = "./pictures/";
+
+  for(year=1970; year <= cur_year; year++) {
+    if(fs.existsSync(base_path + year)) {
+      for(month=1; month <= 12; month++) {
+        if(fs.existsSync(base_path + year + "/" + month)) {
+          const content = fs.readdirSync(base_path + year + "/" + month);
+          for(file in content) {
+            const file_name = content[file];
+            const split_day = file_name.split(".")[0].split("_");
+            const file_day = split_day[0];
+            const split_time = split_day[1].split("-");
+            const file_hour = split_time[0];
+            const file_minutes = split_time[1];
+            const file_seconds = split_time[2];
+
+            res_obj.push({
+              year: year,
+              month: month,
+              day: file_day,
+              hour: file_hour,
+              minute: file_minutes,
+              second: file_seconds
+            });
+          }
+        }
+      }
+    }
+  }
+
+
+  return res.status(200).json(res_obj);
+
+}
+
+module.exports = {get_picture, post_save_media, get_medias, get_icons, get_index};
