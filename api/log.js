@@ -1,4 +1,3 @@
-let date_ob = new Date();
 const fs = require("fs");
 
 function write_file(name, text) {
@@ -6,6 +5,8 @@ function write_file(name, text) {
 }
 
 function write_log(prefix, message) {
+    const date_ob = new Date();
+
     const date = date_ob.getFullYear() + "-" + ("0" + (date_ob.getMonth() + 1)).slice(-2) + "-" +  ("0" + date_ob.getDate()).slice(-2);
     
     const time = ("0" + date_ob.getHours()).slice(-2) + ":" + ("0" + date_ob.getMinutes()).slice(-2) + ":" + ("0" + date_ob.getSeconds()).slice(-2);

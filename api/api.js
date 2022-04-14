@@ -130,8 +130,9 @@ function get_index(res) {
   for(year=1970; year <= cur_year; year++) {
     if(fs.existsSync(base_path + year)) {
       for(month=1; month <= 12; month++) {
-        if(fs.existsSync(base_path + year + "/" + month)) {
-          const content = fs.readdirSync(base_path + year + "/" + month);
+        stringMonth = ("0" + month).slice(-2);
+        if(fs.existsSync(base_path + year + "/" + stringMonth)) {
+          const content = fs.readdirSync(base_path + year + "/" + stringMonth);
           for(file in content) {
             const file_name = content[file];
             const split_day = file_name.split(".")[0].split("_");
@@ -144,10 +145,10 @@ function get_index(res) {
             res_obj.push({
               year: year,
               month: month,
-              day: file_day,
-              hour: file_hour,
-              minute: file_minutes,
-              second: file_seconds
+              day: Number(file_day),
+              hour: Number(file_hour),
+              minute: Number(file_minutes),
+              second: Number(file_seconds)
             });
           }
         }
