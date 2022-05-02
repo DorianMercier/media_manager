@@ -69,4 +69,29 @@ function get_medias(amount, year, month, day, hour, minutes, seconds) {
     return result;
 }
 
-module.exports = {get_medias};
+function get_media(year, month, day, hour, minute, second) {
+    folder = base_path + year + "/" + ("0" + month).slice(-2);
+    var file_name = "";
+    var icon_name = "";
+    if(fs.existsSync(folder)) {
+        log.debug("The folder " + folder + " exists");
+        content = fs.readdirSync(folder);
+        log.debug("Content of the folder : " + content);
+        var file_name_base = ("0" + day).slice(-2) + "_" + ("0" + hour).slice(-2) + "-" + ("0" + minute).slice(-2) + "-" + ("0" + second).slice(-2);
+        //Test if the folder is empty
+        if(content.length > 0) {
+            log.debug("Folder is not empty");
+            for(file in content) {
+                log.debug("Checking if the file " + content[file] + " corresponds at what we want");
+                if(content[file].includes(file_name_base)) {
+                    log.debug("The file " + content[file] + " corresponds at what we want");
+                    file_name = content[file];
+                    icon_name = year + "-" + ("0" + month).slice(-2) + "-" + file_name;
+                    break;
+                }
+            }
+        }
+    }
+    return {path: folder + "/" + file_name, name: icon_name};
+}
+module.exports = {get_medias, get_media};

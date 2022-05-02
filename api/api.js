@@ -6,6 +6,9 @@ const mc = require("./media_catcher");
 const zip = require("express-zip");
 const sharp = require("sharp");
 
+//@TODO A modifier pour inclure dans un fichier de configurations
+const pictures_path = "C:/servers/media_manager/pictures/";
+
 function check_time(time) {
     let is_positive = true;
 
@@ -89,8 +92,7 @@ function get_icons(req, res) {
 
   const file_paths = mc.get_medias(body.amount, body.year, body.month, body.day, body.hour, body.minutes, body.seconds);
 
-  //A modifier pour inclure dans un fichier de configuration
-  const path_resizing = "C:/servers/media_manager/pictures/buffer_icons/";
+  const path_resizing = pictures_path + "buffer_icons/";
   var input_file;
   var output_file;
   const size = body.size;
@@ -116,6 +118,49 @@ function get_icons(req, res) {
   }
 
   return res.status(200).zip(file_paths);
+}
+
+function get_icon(req, res) {
+  log.info("Receiving GET /get_icon request");
+
+  if(!req.is("application/json")) return res.status(400).json(JSON.stringify(error_bodies.error_format_json));
+  
+  const body = req.body;
+
+  body.year
+
+  const file_path = mc.get_media(body.year, body.month, body.day, body.hour, body.minute, body.second);
+
+  if(file_path.name == "") return res.status(404);
+
+  const path_resizing = pictures_path + "buffer_icons/";
+  var input_file;
+  var output_file;
+  const size = body.size;
+  log.debug("Taille demandée : " + size);
+
+  input_file = file_path.path;
+  output_file = path_resizing + file_path.name;
+  if(!fs.existsSync(output_file)) {
+    fs.writeFileSync(output_file, "", { flag: "w" }, err => {log.error("Failed to create the file " + output_file + ". " + err);});
+
+    return sharp(input_file).resize({height: size, width: size}).toFile(output_file)
+    .then(function (newFileInfo) {
+      log.info("Adding the icon " + output_file + " to the buffer");
+      log.info(newFileInfo);
+      log.debug("Sending the file " + output_file);
+      return res.status(200).sendFile(output_file);
+    })
+    .catch(function(err) {
+      log.error("Error occured when generating the icon " + output_file + " for the picture " + input_file);
+      log.error(err);
+      return res.statuc(500);
+    }); 
+  }
+  else {
+    log.debug("Sending the file " + output_file);
+    return res.status(200).sendFile(output_file);
+  }
 }
 
 function get_index(res) {
@@ -161,4 +206,4 @@ function get_index(res) {
 
 }
 
-module.exports = {get_picture, post_save_media, get_medias, get_icons, get_index};
+module.exports = {get_picture, post_save_media, get_medias, get_icons, get_index, get_icon};
