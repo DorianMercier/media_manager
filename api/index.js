@@ -21,6 +21,7 @@ app.get("/get_medias", (req, res) => {api.get_medias(req, res)});
 app.get("/get_icons", (req, res) => {api.get_icons(req, res)});
 app.get("/get_icon", (req, res) => {api.get_icon(req, res)});
 app.get("/get_index", (req, res) => {api.get_index(res)});
+app.post("/get_icon", (req, res) => {api.get_icon(req, res)});
 
 const httpsServer = https.createServer(credentials, app);
 const httpServer = http.createServer(app);

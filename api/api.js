@@ -33,6 +33,9 @@ const error_bodies = {
     error_format_image: {
         message: "request format must be image/*"
     },
+    error_icon_not_found: {
+      message: "Icon not found"
+    }
 }
 
 function get_picture(req, res) {
@@ -123,6 +126,10 @@ function get_icons(req, res) {
 function get_icon(req, res) {
   log.info("Receiving GET /get_icon request");
 
+  console.log("body received:");
+  console.log(req.body);
+  // console.log(req);
+
   if(!req.is("application/json")) return res.status(400).json(JSON.stringify(error_bodies.error_format_json));
   
   const body = req.body;
@@ -131,7 +138,7 @@ function get_icon(req, res) {
 
   const file_path = mc.get_media(body.year, body.month, body.day, body.hour, body.minute, body.second);
 
-  if(file_path.name == "") return res.status(404);
+  if(file_path.name == null) return res.status(404).json(error_bodies.error_icon_not_found);
 
   const path_resizing = pictures_path + "buffer_icons/";
   var input_file;

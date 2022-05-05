@@ -87,11 +87,11 @@ function get_media(year, month, day, hour, minute, second) {
                     log.debug("The file " + content[file] + " corresponds at what we want");
                     file_name = content[file];
                     icon_name = year + "-" + ("0" + month).slice(-2) + "-" + file_name;
-                    break;
+                    return {path: folder + "/" + file_name, name: icon_name};
                 }
             }
         }
     }
-    return {path: folder + "/" + file_name, name: icon_name};
+    return {path: null, name: null};
 }
 module.exports = {get_medias, get_media};
