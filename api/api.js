@@ -35,17 +35,27 @@ const error_bodies = {
     },
     error_icon_not_found: {
       message: "Icon not found"
-    }
+    },
+	error_picture_not_found: {
+		message: "Picture not found"
+	}
 }
 
 function get_picture(req, res) {
+	log.info("Receiving GET /get_picture request");
+	console.log(req.body);
     if(!req.is("application/json")) return res.status(400).json(JSON.stringify(error_bodies.error_format_json));
 
-    const name = req.body.name;
+	const body = req.body;
 
-    if(name == null) return res.status(412).json(JSON.stringify(error_bodies.error_wrong_request_format));
+    const file_path = mc.get_media(body.year, body.month, body.day, body.hour, body.minute, body.second);
 
-    if (fs.existsSync("./pictures/"+name)) res.status(200).download("./pictures/"+name);
+    if(file_path.name == null) return res.status(404).json(error_bodies.error_picture_not_found);
+
+	console.log(file_path);
+
+
+    if (fs.existsSync(file_path.path)) res.status(200).download(file_path.path);
     else return res.status(404).json(JSON.stringify(error_bodies.error_picture_not_found));
 
 }
@@ -99,7 +109,7 @@ function get_icons(req, res) {
   var input_file;
   var output_file;
   const size = body.size;
-  log.debug("Taille demandée : " + size);
+  // //log.debug("Taille demandée : " + size);
 
   for(file in file_paths) {
     input_file = file_paths[file].path;
@@ -126,11 +136,12 @@ function get_icons(req, res) {
 function get_icon(req, res) {
   log.info("Receiving GET /get_icon request");
 
-  console.log("body received:");
-  console.log(req.body);
   // console.log(req);
 
-  if(!req.is("application/json")) return res.status(400).json(JSON.stringify(error_bodies.error_format_json));
+  if(!req.is("application/json")) {
+    log.error("Wrong request format");
+    return res.status(400).json(JSON.stringify(error_bodies.error_format_json));
+  }
   
   const body = req.body;
 
@@ -144,7 +155,7 @@ function get_icon(req, res) {
   var input_file;
   var output_file;
   const size = body.size;
-  log.debug("Taille demandée : " + size);
+  // //log.debug("Taille demandée : " + size);
 
   input_file = file_path.path;
   output_file = path_resizing + file_path.name;
@@ -155,7 +166,7 @@ function get_icon(req, res) {
     .then(function (newFileInfo) {
       log.info("Adding the icon " + output_file + " to the buffer");
       log.info(newFileInfo);
-      log.debug("Sending the file " + output_file);
+      // //log.debug("Sending the file " + output_file);
       return res.status(200).sendFile(output_file);
     })
     .catch(function(err) {
@@ -165,7 +176,7 @@ function get_icon(req, res) {
     }); 
   }
   else {
-    log.debug("Sending the file " + output_file);
+    //log.debug("Sending the file " + output_file);
     return res.status(200).sendFile(output_file);
   }
 }

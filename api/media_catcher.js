@@ -6,7 +6,7 @@ let date_obj = new Date();
 const base_path = "C:/servers/media_manager/pictures/";
 
 function is_file_before(file_name, day, hour, minutes, seconds) {
-    log.debug("Entering is_file_before for file " + file_name);
+    //log.debug("Entering is_file_before for file " + file_name);
     const split_day = file_name.split(".")[0].split("_");
     const file_day = split_day[0];
     const split_time = split_day[1].split("-");
@@ -19,7 +19,7 @@ function is_file_before(file_name, day, hour, minutes, seconds) {
 }
 
 function get_medias(amount, year, month, day, hour, minutes, seconds) {
-    log.debug("Entering get_medias");
+    //log.debug("Entering get_medias");
     var cur_year = year;
     var cur_month = ("0" + month).slice(-2);
     var result = [];
@@ -29,7 +29,7 @@ function get_medias(amount, year, month, day, hour, minutes, seconds) {
     while(result.length < amount) {
         //Check if the month value is correct
         if(cur_month < 1) {
-            log.debug("Month out of range : " + cur_month);
+            //log.debug("Month out of range : " + cur_month);
             cur_month = 12;
             cur_year--;
         }
@@ -37,25 +37,25 @@ function get_medias(amount, year, month, day, hour, minutes, seconds) {
             cur_path = base_path + cur_year + "/" + ("0" + cur_month).slice(-2);
             //Check if the folder corresponding to the date exists
             if(fs.existsSync(cur_path)) {
-                log.debug("The folder " + cur_path + " exists");
+                //log.debug("The folder " + cur_path + " exists");
                 content = fs.readdirSync(cur_path);
-                log.debug("Content of the folder : " + content);
+                //log.debug("Content of the folder : " + content);
                 //Test if the folder is empty
                 if(content.length > 0) {
                     //We need to exclude all files which have a date previous than the arguments of the function
                     for(file in content) {
                         if(result.length >= amount) break;
                         if(is_first_check) {
-                            log.debug("First check");
-                            log.debug("Path of the current file : " + content[file]);
+                            //log.debug("First check");
+                            //log.debug("Path of the current file : " + content[file]);
                             
                             if(is_file_before(content[file], day, hour, minutes, seconds)) {
-                                log.debug("Adding file to result");
+                                //log.debug("Adding file to result");
                                 result.push({path: cur_path + "/" + content[file], name: cur_year + "-" + ("0" + cur_month).slice(-2) + "-" + content[file]});
                             }
                         }
                         else {
-                            log.debug("Adding file to result");
+                            //log.debug("Adding file to result");
                             result.push({path: cur_path + "/" + content[file], name: cur_year + "-" + ("0" + cur_month).slice(-2) + "-" + content[file]});
                         }
                     }
@@ -74,17 +74,17 @@ function get_media(year, month, day, hour, minute, second) {
     var file_name = "";
     var icon_name = "";
     if(fs.existsSync(folder)) {
-        log.debug("The folder " + folder + " exists");
+        //log.debug("The folder " + folder + " exists");
         content = fs.readdirSync(folder);
-        log.debug("Content of the folder : " + content);
+        //log.debug("Content of the folder : " + content);
         var file_name_base = ("0" + day).slice(-2) + "_" + ("0" + hour).slice(-2) + "-" + ("0" + minute).slice(-2) + "-" + ("0" + second).slice(-2);
         //Test if the folder is empty
         if(content.length > 0) {
-            log.debug("Folder is not empty");
+            //log.debug("Folder is not empty");
             for(file in content) {
-                log.debug("Checking if the file " + content[file] + " corresponds at what we want");
+                //log.debug("Checking if the file " + content[file] + " corresponds at what we want");
                 if(content[file].includes(file_name_base)) {
-                    log.debug("The file " + content[file] + " corresponds at what we want");
+                    //log.debug("The file " + content[file] + " corresponds at what we want");
                     file_name = content[file];
                     icon_name = year + "-" + ("0" + month).slice(-2) + "-" + file_name;
                     return {path: folder + "/" + file_name, name: icon_name};

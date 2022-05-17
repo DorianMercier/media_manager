@@ -33,7 +33,7 @@ function get_file_name(req, original_name) {
   const base_path = get_folder(req);
   
   while(fs.existsSync(base_path +  "/" + ("0" + day).slice(-2) + "_" + ("0" + hour).slice(-2) + "-" + ("0" + minute).slice(-2) + "-"  + ("0" + second).slice(-2) + ext)) {
-    log.debug("Variable base_path : " + base_path +  "/" + ("0" + day).slice(-2) + "_" + ("0" + hour).slice(-2) + "-" + ("0" + minute).slice(-2) + "-"  + ("0" + second).slice(-2) + ext);
+    //log.debug("Variable base_path : " + base_path +  "/" + ("0" + day).slice(-2) + "_" + ("0" + hour).slice(-2) + "-" + ("0" + minute).slice(-2) + "-"  + ("0" + second).slice(-2) + ext);
     if(second >= 59) {
         second = 0;
         if(minute >= 59) {
